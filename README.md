@@ -3,4 +3,6 @@
 
 程序未经过完全的测试，请谨慎使用！
 
+工具：hpatchz.exe 来自 [HDiffPatch](https://github.com/sisong/HDiffPatch)
+
 待完成。。。
