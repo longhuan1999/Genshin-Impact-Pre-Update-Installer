@@ -1,5 +1,8 @@
 __pycache__/
 build/
+dist/
+2.8.0_patch/patched/
+2.8.0_patch/origin/
 null
 process.json
 test.py
