@@ -1,6 +1,7 @@
 __pycache__/
 build/
 dist/
+release/
 2.8.0_patch/patched/
 2.8.0_patch/origin/
 null
