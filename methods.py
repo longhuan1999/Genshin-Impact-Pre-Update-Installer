@@ -505,6 +505,7 @@ def delete_files(gig_path, fun_selected):
         if os.path.isfile(deletefile):
             delet_IWRITE(os.path.join(gig_path, deletefile))
             os.remove(deletefile)
+            process_json["delete_files_staut"][index_filename(filename, "delete_files_staut")][1] = "already_deleted"
         bar1.next()
     bar1.finish()
     print()
