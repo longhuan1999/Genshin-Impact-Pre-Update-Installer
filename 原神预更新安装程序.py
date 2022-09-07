@@ -5,7 +5,7 @@ from progress.bar import IncrementalBar
 from tkinter.filedialog import askopenfilename, askdirectory
 from methods import *
 #from methods import find_gig_path, hdiff_files, delete_files, delet_IWRITE, delete_dirs, backup_file, read_json, find_zipfile
-# from time import sleep
+from time import sleep
 
 
 """ 
@@ -64,14 +64,14 @@ def main():
         fun_str = "\n%s\n"%("="*100)
         if process_json:
             if process_json["old_v"] == current_v and process_json["gig_path"] == gig_path and "AllDone" not in process_json:
-                fun_str += "1.继续上次未完成的任务\n2.退出\n"
-                fun_list = ["continue_update","exit"]
+                fun_str += "1.继续上次未完成的任务\n2.md5检查\n3.退出\n"
+                fun_list = ["continue_update","md5_check","exit"]
             elif "AllDone" in process_json and os.path.isdir(r"%s_patch\patched\GenshinImpact_Data" % update_v):
-                fun_str += "1.管理备份\n2.修改/还原metadata\n3.退出\n"
-                fun_list = ["backup_manage","metadata_patch","exit"]
+                fun_str += "1.管理备份\n2.md5检查\n3.修改/还原metadata\n4.退出\n"
+                fun_list = ["backup_manage","md5_check","metadata_patch","exit"]
             elif "AllDone" in process_json and "backup_path" in process_json:
-                fun_str += "1.管理备份\n2.退出\n"
-                fun_list = ["backup_manage","exit"]
+                fun_str += "1.管理备份\n2.md5检查\n3.退出\n"
+                fun_list = ["backup_manage","md5_check","exit"]
             else:
                 fun_str += "1.开始新的更新\n2.退出\n"
                 fun_list = ["new_update","exit"]
@@ -180,9 +180,11 @@ def main():
                     break
                 else:
                     print("\n！！！输入有误，请重新输入！！！\n")
-            
-                
-
+        elif fun_selected == "md5_check":
+            print("\n%s\n"%("="*100))
+            md5_check()
+            sleep(1)
+            print("\n%s\n"%("="*100))
         elif fun_selected == "exit":
             exit()
 

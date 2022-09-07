@@ -1,3 +1,5 @@
+from fileinput import filename
+from genericpath import isfile
 import stat
 import winreg
 import os
@@ -6,6 +8,7 @@ import zipfile
 from tkinter.filedialog import askopenfilename, askdirectory
 from progress.bar import IncrementalBar
 from py import process
+from time import sleep
 
 
 # 删除文件只读属性
@@ -506,6 +509,7 @@ def delete_files(gig_path, fun_selected):
             delet_IWRITE(os.path.join(gig_path, deletefile))
             os.remove(deletefile)
             process_json["delete_files_staut"][index_filename(filename, "delete_files_staut")][1] = "already_deleted"
+            process_json_save(process_json)
         bar1.next()
     bar1.finish()
     print()
@@ -594,10 +598,15 @@ def restore_backup():
     backupfiles = []
     for i in process_json["zip_files_staut"]:
         if i[0][-6:] == ".hdiff":
-            updatefiles.append(i[0][:-6])
-        if i[2] == "already_backed_up":
-            backupfiles.append(i[0])
-        updatefiles.append(i[0])
+            if i[2] == "already_backed_up":
+                backupfiles.append(i[0][:-6])
+            else:
+                updatefiles.append(i[0][:-6])
+        else:
+            if i[2] == "already_backed_up":
+                backupfiles.append(i[0])
+            else:
+                updatefiles.append(i[0])
     for i in process_json["delete_files_staut"]:
         deletefiles.append(i[0])
         backupfiles.append(i[0])
@@ -616,10 +625,12 @@ def restore_backup():
             for i in backupfiles_hiatus:
                 print("！！！备份文件\"%s\"不存在，恢复失败！！！"%i)
     
+    print("删除已更新文件中。。。")
     for i in updatefiles:
         if os.path.isfile(os.path.join(gig_path, i)):
             os.remove(os.path.join(gig_path, i))
     
+    print("复制备份文件中。。。")
     result = os.system("xcopy /s /e /y \"%s\" \"%s\" >null"%(backup_path, gig_path))
     if result != 0:
             input("\n！！！复制文件夹\n%s\n到\n%s\n时出错！！！\n程序退出"%(backup_path, gig_path))
@@ -661,6 +672,39 @@ def delete_backup():
         process_json_save(process_json)
         print("\n！！！备份已删除！！！\n")
     
+
+def md5_check():
+    # 读取 process.json 文件
+    process_json = read_json()
+    gig_path = process_json["gig_path"]
+    files_list = []
+    with open(os.path.join(gig_path, "pkg_version"),"r",encoding="utf8") as f:
+        for i in f.readlines():
+            files_list.append(i.strip())
+    with open(os.path.join(gig_path, "Audio_Chinese_pkg_version"),"r",encoding="utf8") as f:
+        for i in f.readlines():
+            files_list.append(i.strip())
+    bar1 = IncrementalBar('检查md5中：\t\t', max = len(files_list))
+    print_str = ""
+    for i in files_list:
+        i = eval(i)
+        filename = os.path.join(gig_path, i["remoteName"].replace("/","\\"))
+        if os.path.isfile(filename):
+            result = os.popen("certutil -hashfile \"%s\" md5"%filename)
+            result = (result.readlines())[1].strip()
+            if result == i["md5"]:
+                bar1.next()
+            else:
+                print_str += "%s: \nmd5:%s 与 记录的md5:%s 不匹配！！\n"%(filename,result,i["md5"])
+                bar1.next()
+        else:
+            print_str += "%s 不存在！！\n"%filename
+            bar1.next()
+    bar1.finish()
+    sleep(1)
+    if print_str == "":
+        print_str = "所有文件均已通过检查！"
+    print(print_str)
 
 
 
