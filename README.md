@@ -1,3 +1,5 @@
+> 已存在实现类似需求的成熟工具，本项目已不再维护，仅作本人的学习记录
+
 # Genshin Impact Pre Update Installer
  原神预更新安装程序
 
@@ -5,4 +7,4 @@
 
 工具：hpatchz.exe 来自 [HDiffPatch](https://github.com/sisong/HDiffPatch)
 
-待完成。。。
+~~待完成。。。~~
